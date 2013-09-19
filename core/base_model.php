@@ -53,8 +53,8 @@ class BaseModel {
 			foreach($string as $s)$ret[] = self::escapeString($s);
 			return $ret;
 		}
-		if($string == null)return 'NULL';
-		if(!is_numeric($string))return "'".addslashes($string)."'"; 
+		if($string == null && is_numeric($string))return 'NULL';
+		if(!is_numeric($string))return "'".htmlentities(addslashes($string))."'"; 
 		return $string;
 	}
 	
@@ -137,7 +137,7 @@ class BaseModel {
 		$this->setFields($data);
 		$data = $this->fields;
 		$columns = implode(',',array_map(function($n){return '`'.$n.'`';},array_keys($data)));
-		$values = implode(',',array_map(function($n){return self::escapeString($value);},array_values($data)));
+		$values = implode(',',array_map(function($n){return self::escapeString($n);},array_values($data)));
 		$query = "INSERT INTO `".static::tableName."` (".$columns.", `created_at`) VALUES (".$values.", NOW())";
 		$this->db->query($query);
 		$this->id = $this->db->mysqli->insert_id;
