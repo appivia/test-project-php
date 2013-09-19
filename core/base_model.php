@@ -137,7 +137,7 @@ class BaseModel {
 		$this->setFields($data);
 		$data = $this->fields;
 		$columns = implode(',',array_map(function($n){return '`'.$n.'`';},array_keys($data)));
-		$values = implode(',',array_map(function($n){if(!is_numeric($n))return "'".$n."'";else return $n;},array_values($data)));
+		$values = implode(',',array_map(function($n){return self::escapeString($value);},array_values($data)));
 		$query = "INSERT INTO `".static::tableName."` (".$columns.", `created_at`) VALUES (".$values.", NOW())";
 		$this->db->query($query);
 		$this->id = $this->db->mysqli->insert_id;
