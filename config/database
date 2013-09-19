@@ -1,0 +1,7 @@
+<?php
+$database = array(
+	'address' 	=> '',
+	'username'	=> '',
+	'password'	=> '',
+	'database'	=> ''
+);
