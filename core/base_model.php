@@ -211,6 +211,7 @@ class BaseModel {
 			$datas[] = '`'.$field.'` = '.self::escapeValue($value);
 		}
 		$dataString = implode(', ', $datas);	
+		return $dataString;
 	}
 	
 	/**
