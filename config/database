@@ -1,4 +1,10 @@
 <?php
+
+/*
+* This is template of database config.
+* Fill out database configuration options below and rename this file to 'database.php'
+*/
+
 $database = array(
 	'address' 	=> '',
 	'username'	=> '',
