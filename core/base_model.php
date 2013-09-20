@@ -2,94 +2,147 @@
 
 class BaseModel {
 	
-	protected $db,$id,$fields = array();
+	protected $db;
+	protected $id;
+	protected $fields = array();
 	
+	/**
+	 * Creates new model instance
+	 * param $db: database instance
+	 * param $id: record's id, null id usually means new record
+	 * param $fields: eager load given fields, use '*' for all fields 
+	 */
 	public function __construct($db,$id = null,$fields = array()){
 		$this->db = $db;
 		$this->id = $id;
 		if(!empty($fields) && isset($this->id))$this->getFields($fields);
 	}	
 	
+	/**
+	 * Get current record's id
+	 */
 	public function getId(){
 		return $this->id;	
 	}
 	
+	/**
+	 * Retrieves given field from memory or database
+	 */
 	protected function getField($field){
-		if(array_key_exists($field,$this->fields))return $this->fields[$field];
+		// Retrieve from memory if exists
+		if(array_key_exists($field,$this->fields)){
+			return $this->fields[$field];
+		}
+		// Only retrieve from DB if we know the id
 		else if(isset($this->id)){
 			$query = 'SELECT `'.$field.'` FROM `'.static::tableName.'` WHERE `id` = '.$this->id;
+			// Execute query
 			$res = $this->db->query($query);
+			// If result contains the field, save it and return it
 			if(isset($res[0][$field])){
-				$this->fields[$field] = $res[0][$field];
+				$this->setField($field, $res[0][$field]);
 				return $this->fields[$field];
 			}else return false;
 		}else return false;
 	}
 	
-	protected function getFields($fields){
+	/**
+	 * Retrieve multiple fields from database
+	 * Use '*' for all fields
+	 */
+	protected function getFields($fields = array()){
+		// Prepare string with fields
 		if($fields != '*')$fields = '`'.implode('`, `',$fields).'`';
 		$query = 'SELECT '.$fields.' FROM `'.static::tableName.'` WHERE `id` = '.$this->id;
+		// Execute query
 		$res = $this->db->query($query);
+		// If result exits, save and return it
 		if(isset($res[0])){
+			$ret = array();
 			foreach($res[0] as $field => $value){
 				$this->setField($field, $value);	
+				$ret[$field] = $value;
 			}
+			return $ret;
 		}else return false;
 	}
 	
+	/**
+	 * Sets given field
+	 */
 	protected function setField($field,$value){
 		$this->fields[$field] = $value;
 	}
 	
+	/**
+	 * Sets given fields
+	 */
 	protected function setFields($data){
 		foreach ($data as $field => $value){
 			$this->setField($field,$value);
 		}
 	}
 	
-	public static function escapeString($string){
-		if(is_array($string)){
+	/**
+	 * Escapes values for inserting them into database
+	 * Can also handle array of value
+	 */
+	public static function escapeValue($value){
+		// Handle arrays
+		if(is_array($value)){
 			$ret = array();
-			foreach($string as $s)$ret[] = self::escapeString($s);
+			foreach($value as $v)$ret[] = self::escapeValue($v);
 			return $ret;
 		}
-		if($string == null && is_numeric($string))return 'NULL';
-		if(!is_numeric($string))return "'".htmlentities(addslashes($string))."'"; 
-		return $string;
+		// Parse null values
+		if($value === null)return 'NULL';
+		// Escape string values
+		if(!is_numeric($value))return "'".htmlentities(addslashes($value))."'"; 
+		return $value;
 	}
 	
-	public static function findFirst($db,$conditions = array(),$order = array(),$fields = array()){
-		$ret = self::find($db,$conditions,$order,array(0,1),$fields);
+	/**
+	 * Finds one record using given criteria
+	 * param $fields: Eager load given fields
+	 * param $conditions: array of WHERE conditions
+	 * param $order: array of ORDER BY criteria
+	 */
+	public static function findFirst($db,$fields = array(),$conditions = array(),$order = array()){
+		// Executes find with LIMIT 0, 1
+		$ret = self::find($db,$fields,$conditions,$order,array(0,1));
+		// If result exists return it
 		if(!empty($ret))return $ret[0];
 		else return false;
 	}
 	
-	public static function find($db,$conditions = array(),$order = array(),$limit = null,$fields = array()){
-		$where = '1';
-		foreach($conditions as $key => $condition){
-			if(is_array($condition)){
-				$condString = implode(', ',self::escapeString($condition));
-				$where .= ' AND `'.$key.'` IN ('.$condString.')';
-			}else
-				$where .= ' AND `'.$key.'` = '.self::escapeString($condition);
-		}
-		$sort = !empty($order)?'ORDER BY':'';
-		foreach($order as $key => $dir){
-			$sort .= ' '.$key.' '.$dir;
-		}
-		$limit = isset($limit)?'LIMIT '.$limit[0].', '.$limit[1]:'';
-		if($fields != '*')$fields = '`'.implode('`, `',$fields).'`';
-		if($fields == '``')$fields = '`id`';elseif($fields != '*') $fields = '`id`, '.$fields;
-		$query = 'SELECT '.$fields.' FROM `'.static::tableName.'` WHERE '.$where.' '.$sort.' '.$limit;
+	/**
+	 * Finds records using given criteria
+	 * param $fields: Eager load given fields
+	 * param $conditions: array of WHERE conditions
+	 * param $order: array of ORDER BY criteria
+	 * param $limit: array in form array(a,b)
+	 */
+	public static function find($db,$fields = array(),$conditions = array(),$order = array(),$limit = null){
+		// Build query	
+		$where = self::buildWhere($conditions);
+		$sort = self::buildOrderBy($order);
+		$limit = self::buildLimit($limit);
+		$select = self::buildSelect($fields);
+		$query = 'SELECT '.$select.' FROM `'.static::tableName.'` WHERE '.$where.' '.$sort.' '.$limit;
+		// Execute query
 		$res = $db->query($query);
 		$ret = array();
+		// Create instance of current model for each row
+		$className = static::className;
 		foreach($res as $result){
-			$className = static::className;
+			// New instance
 			$newClass = new $className($db);
+			// Set all fields retrieved from database
 			foreach ($result as $field => $value){
 				if($field != 'id')$newClass->setField($field, $value);
 				else $newClass->setId($value);
 			}
+			// Also set fields specified by conditions
 			foreach($conditions as $field => $value)if(!is_array($value)){
 				if($field != 'id')$newClass->setField($field, $value);
 				else $newClass->setId($value);
@@ -98,48 +151,142 @@ class BaseModel {
 		}
 		return $ret;
 	}
+
+	/**
+	 * Builds WHERE string based on given conditions
+	 * Can handle basic equality or IN using array as condition value
+	 */
+	private static function buildWhere($conditions){
+		$where = '1';
+		foreach($conditions as $key => $condition){
+			if(is_array($condition)){
+				$condString = implode(', ',self::escapeValue($condition));
+				$where .= ' AND `'.$key.'` IN ('.$condString.')';
+			}else
+				$where .= ' AND `'.$key.'` = '.self::escapeValue($condition);
+		}	
+		return $where;
+	}
 	
+	/**
+	 * Builds ORDER BY string based on given array
+	 */
+	private static function buildOrderBy($order){
+		$sort = !empty($order)?'ORDER BY':'';
+		foreach($order as $key => $dir){
+			$sort .= ' '.$key.' '.$dir;
+		}
+		return $sort;
+	}
+	
+	/**
+	 * Builds LIMIT string based on given array
+	 */
+	private static function buildLimit($limit){
+		return $limit = isset($limit)?'LIMIT '.$limit[0].', '.$limit[1]:'';
+	}
+	
+	/**
+	 * Builds SELECT string based on given array
+	 */
+	private static function buildSelect($fields){
+		if($fields != '*')$fields = '`'.implode('`, `',$fields).'`';
+		// If $fields was empty array select at least id
+		if($fields == '``'){
+			$fields = '`id`';
+		}
+		// If $fields doesn't contain id select it too
+		elseif($fields != '*' && !in_array('id', $fields)){
+			$fields = '`id`, '.$fields;
+		}
+		return $fields;
+	}
+	
+	/**
+	 * Builds UPDATE data string from given data
+	 */
+	private static function buildUpdateData($data){
+		$datas = array();
+		foreach($data as $field => $value){
+			$datas[] = '`'.$field.'` = '.self::escapeValue($value);
+		}
+		$dataString = implode(', ', $datas);	
+	}
+	
+	/**
+	 * Builds INSERT data strings from given data
+	 * Returns array(
+	 * 	'columns' => 'column string',
+	 * 	'values'  => 'values string'
+	 * );
+	 */
+	private static function buildInsertData($data){
+		$columns = '`'.implode('`, `',array_keys($data)).'`';
+		$values = implode(',',self::escapeValue(array_values($data)));
+		return array(
+			'columns' 	=> $columns,
+			'values' 	=> $values
+		);
+	}
+	
+	/**
+	 * Get list of instances using custom query
+	 */
 	public static function sql($db,$q){
 		$res = $db->query($q);
 		$ret = array();
+		$className = static::className;
 		foreach($res as $result){
-			$className = static::className;
+			// Create new instance
 			$ret[] = new $className($db,$result['id']);
 		}
 		return $ret;
 	}
 	
+	/**
+	 * Set id for current record
+	 */
 	public function setId($id){
 		$this->id = $id;
 	}
 	
+	/**
+	 * Delete current record from database
+	 */
 	public function delete(){
+		// Delete only if we know the id
 		if(isset($this->id)) {
 			$query = "DELETE FROM ".static::tableName." WHERE `id` = ".$this->id;
 			$this->db->query($query);
 		}
 	}
 	
+	/**
+	 * Update current record with given data
+	 * Also fields set with setField will be updated
+	 */
 	public function update($data = array()){
+		// Update only if we know the id
 		if(isset($this->id)) {
+			// Overwrite current field values with given data
 			$this->setFields($data);
-			$data = array();
-			foreach($this->fields as $field => $value){
-				$data[] = '`'.$field.'` = '.self::escapeString($value);
-			}
-			$dataString = implode(', ', $data);
+			$dataString = self::buildUpdateData($this->fields);
 			$query = "UPDATE `"."` SET ".$dataString." WHERE `id` = ".$this->id;
 			$this->db->query($query);
 		}
 	}
 	
+	/**
+	 * Insert current record with given data
+	 * Also fields set with setField will be inserted
+	 */
 	public function insert($data = array()){
-		$this->setFields($data);
-		$data = $this->fields;
-		$columns = implode(',',array_map(function($n){return '`'.$n.'`';},array_keys($data)));
-		$values = implode(',',array_map(function($n){return self::escapeString($n);},array_values($data)));
-		$query = "INSERT INTO `".static::tableName."` (".$columns.", `created_at`) VALUES (".$values.", NOW())";
+		// Overwrite current field values with given data
+		$this->setFields($data);		
+		$insertStrings = self::buildInsertData($this->fields);
+		$query = "INSERT INTO `".static::tableName."` (".$insertStrings['columns'].", `created_at`) VALUES (".$insertStrings['values'].", NOW())";
 		$this->db->query($query);
+		// Retrieve id of inserted record
 		$this->id = $this->db->mysqli->insert_id;
 	}
 	
