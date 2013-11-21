@@ -1,30 +1,30 @@
 <?php
 
 class BaseModel {
-	
+
 	protected $db;
 	protected $id;
 	protected $fields = array();
-	
+
 	/**
 	 * Creates new model instance
 	 * param $db: database instance
 	 * param $id: record's id, null id usually means new record
-	 * param $fields: eager load given fields, use '*' for all fields 
+	 * param $fields: eager load given fields, use '*' for all fields
 	 */
 	public function __construct($db,$id = null,$fields = array()){
 		$this->db = $db;
 		$this->id = $id;
 		if(!empty($fields) && isset($this->id))$this->getFields($fields);
-	}	
-	
+	}
+
 	/**
 	 * Get current record's id
 	 */
 	public function getId(){
-		return $this->id;	
+		return $this->id;
 	}
-	
+
 	/**
 	 * Retrieves given field from memory or database
 	 */
@@ -45,7 +45,7 @@ class BaseModel {
 			}else return false;
 		}else return false;
 	}
-	
+
 	/**
 	 * Retrieve multiple fields from database
 	 * Use '*' for all fields
@@ -60,20 +60,20 @@ class BaseModel {
 		if(isset($res[0])){
 			$ret = array();
 			foreach($res[0] as $field => $value){
-				$this->setField($field, $value);	
+				$this->setField($field, $value);
 				$ret[$field] = $value;
 			}
 			return $ret;
 		}else return false;
 	}
-	
+
 	/**
 	 * Sets given field
 	 */
 	protected function setField($field,$value){
 		$this->fields[$field] = $value;
 	}
-	
+
 	/**
 	 * Sets given fields
 	 */
@@ -82,7 +82,7 @@ class BaseModel {
 			$this->setField($field,$value);
 		}
 	}
-	
+
 	/**
 	 * Escapes values for inserting them into database
 	 * Can also handle array of value
@@ -97,10 +97,10 @@ class BaseModel {
 		// Parse null values
 		if($value === null)return 'NULL';
 		// Escape string values
-		if(!is_numeric($value))return "'".htmlentities(addslashes($value))."'"; 
+		if(!is_numeric($value))return "'".htmlentities(addslashes($value))."'";
 		return $value;
 	}
-	
+
 	/**
 	 * Finds one record using given criteria
 	 * param $fields: Eager load given fields
@@ -114,7 +114,7 @@ class BaseModel {
 		if(!empty($ret))return $ret[0];
 		else return false;
 	}
-	
+
 	/**
 	 * Finds records using given criteria
 	 * param $fields: Eager load given fields
@@ -123,7 +123,7 @@ class BaseModel {
 	 * param $limit: array in form array(a,b)
 	 */
 	public static function find($db,$fields = array(),$conditions = array(),$order = array(),$limit = null){
-		// Build query	
+		// Build query
 		$where = self::buildWhere($conditions);
 		$sort = self::buildOrderBy($order);
 		$limit = self::buildLimit($limit);
@@ -164,10 +164,10 @@ class BaseModel {
 				$where .= ' AND `'.$key.'` IN ('.$condString.')';
 			}else
 				$where .= ' AND `'.$key.'` = '.self::escapeValue($condition);
-		}	
+		}
 		return $where;
 	}
-	
+
 	/**
 	 * Builds ORDER BY string based on given array
 	 */
@@ -178,14 +178,14 @@ class BaseModel {
 		}
 		return $sort;
 	}
-	
+
 	/**
 	 * Builds LIMIT string based on given array
 	 */
 	private static function buildLimit($limit){
 		return $limit = isset($limit)?'LIMIT '.$limit[0].', '.$limit[1]:'';
 	}
-	
+
 	/**
 	 * Builds SELECT string based on given array
 	 */
@@ -201,7 +201,7 @@ class BaseModel {
 		}
 		return $fields;
 	}
-	
+
 	/**
 	 * Builds UPDATE data string from given data
 	 */
@@ -210,10 +210,10 @@ class BaseModel {
 		foreach($data as $field => $value){
 			$datas[] = '`'.$field.'` = '.self::escapeValue($value);
 		}
-		$dataString = implode(', ', $datas);	
+		$dataString = implode(', ', $datas);
 		return $dataString;
 	}
-	
+
 	/**
 	 * Builds INSERT data strings from given data
 	 * Returns array(
@@ -229,7 +229,7 @@ class BaseModel {
 			'values' 	=> $values
 		);
 	}
-	
+
 	/**
 	 * Get list of instances using custom query
 	 */
@@ -243,14 +243,14 @@ class BaseModel {
 		}
 		return $ret;
 	}
-	
+
 	/**
 	 * Set id for current record
 	 */
 	public function setId($id){
 		$this->id = $id;
 	}
-	
+
 	/**
 	 * Delete current record from database
 	 */
@@ -261,7 +261,7 @@ class BaseModel {
 			$this->db->query($query);
 		}
 	}
-	
+
 	/**
 	 * Update current record with given data
 	 * Also fields set with setField will be updated
@@ -276,19 +276,22 @@ class BaseModel {
 			$this->db->query($query);
 		}
 	}
-	
+
 	/**
 	 * Insert current record with given data
 	 * Also fields set with setField will be inserted
 	 */
 	public function insert($data = array()){
 		// Overwrite current field values with given data
-		$this->setFields($data);		
+		$this->setFields($data);
 		$insertStrings = self::buildInsertData($this->fields);
 		$query = "INSERT INTO `".static::tableName."` (".$insertStrings['columns'].", `created_at`) VALUES (".$insertStrings['values'].", NOW())";
 		$this->db->query($query);
 		// Retrieve id of inserted record
 		$this->id = $this->db->mysqli->insert_id;
 	}
-	
+
+	public function toJSON() {
+		return json_encode( (object) $this->fields );
+	}
 }
