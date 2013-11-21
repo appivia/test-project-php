@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app>
+<html ng-app="myApp">
   <head>
     <meta charset="UTF-8">
 
@@ -21,6 +21,11 @@
   <body>
   <div class="container">
     <?= $content ?>
+    <div class="row">
+      <div class="col-md-12">
+        <div id="footer"><p>&copy; 2013</p></div>
+      </div>
+    </div>
   </div>
   </body>
 </html>
