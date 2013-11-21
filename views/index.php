@@ -11,7 +11,7 @@
 
     <div class="row filter">
         <div class="col-md-4 col-md-push-8">
-              <input type="text" class="form-control" placeholder="Enter a City for filtering..">
+              <input type="text" class="form-control" placeholder="Enter a City for filtering.." ng-model="cityFilter.city" />
         </div>
     </div>
 
@@ -26,7 +26,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="user in users">
+            <tr ng-repeat="user in users | filter:cityFilter">
                 <td>{{user.name}}</td>
                 <td>{{user.email}}</td>
                 <td>{{user.phone_number}}</td>
