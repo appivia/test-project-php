@@ -45,7 +45,7 @@
 
        <h3 class="well-header"><span class="glyphicon glyphicon-user"></span> Add New User</h3>
 
-        <form name="newUserForm" novalidate ng-submit="addUser()" class="form form-horizontal">
+        <form name="newUserForm" novalidate ng-submit="addUser(newUserForm)" class="form form-horizontal">
 
             <div class="form-group" ng-class="{'has-error': submitted && newUserForm.name.$invalid}">
                 <label for="name" class="col-sm-3 control-label">Name:</label>
@@ -66,7 +66,7 @@
             <div class="form-group" ng-class="{'has-error': submitted && newUserForm.phone.$invalid}">
                 <label for="phone" class="col-sm-3 control-label">Phone:</label>
                 <div class="col-sm-9">
-                    <input name="phone" input="text" class="form-control" id="phone" ng-model="user.phone" ng-pattern="phone" />
+                    <input name="phone" input="text" class="form-control" id="phone" ng-model="user.phone_number" ng-pattern="phone" />
                     <span ng-show="submitted && newUserForm.phone.$invalid" class="help-block">Please enter a valid phone number, allowed characters are "[0-9]- ()".</span>
                 </div>
             </div>
