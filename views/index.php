@@ -13,13 +13,15 @@
               <input type="text" class="form-control" placeholder="Enter a City for filtering..">
         </div>
     </div>
+
     <div class="table-responsive">
     <table class="table table-striped table-hover table-bordered">
         <thead>
             <tr>
                 <th>Name</th>
                 <th>E-mail</th>
-                <th>City</th>
+                <th>Phone N.</th>
+                <th class="city">City</th>
             </tr>
         </thead>
         <tbody>
@@ -27,6 +29,7 @@
             <tr>
                 <td><?= $user->getName() ?></td>
                 <td><?= $user->getEmail() ?></td>
+                <td><?= $user->getPhoneNumber() ?></td>
                 <td><?= $user->getCity() ?></td>
             </tr>
             <?php endforeach ?>
