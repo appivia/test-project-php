@@ -26,7 +26,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="user in users | filter:cityFilter">
+            <tr ng-repeat="user in users | startFrom:currentPage*pageSize | limitTo:pageSize | filter:cityFilter">
                 <td>{{user.name}}</td>
                 <td>{{user.email}}</td>
                 <td>{{user.phone_number}}</td>
@@ -34,6 +34,14 @@
             </tr>
         </tbody>
     </table>
+    </div>
+
+    <div ng-show="pagesNumber()>1">
+       <ul class="pagination">
+           <li ng-class="{disabled: currentPage==0}"><a ng-click="setCurrentPage(currentPage-1)">Prev</a></li>
+           <li ng-repeat="pageNumber in pagesNumberArray()" ng-class="{active: currentPage==pageNumber}"><a ng-click="setCurrentPage(pageNumber)">{{pageNumber+1}}</a></li>
+           <li ng-class="{disabled: currentPage >= pagesNumber()-1}"><a ng-click="setCurrentPage(currentPage+1)">Next</a></li>
+       </ul>
     </div>
 </div>
 
