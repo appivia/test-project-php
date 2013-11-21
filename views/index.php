@@ -16,7 +16,7 @@
     </div>
 
     <div class="table-responsive">
-    <table class="table table-striped table-hover table-bordered">
+    <table class="users-table table table-striped table-hover table-bordered">
         <thead>
             <tr>
                 <th>Name</th>
@@ -26,14 +26,12 @@
             </tr>
         </thead>
         <tbody>
-            <?php foreach($users as $user): ?>
-            <tr>
-                <td><?= $user->getName() ?></td>
-                <td><?= $user->getEmail() ?></td>
-                <td><?= $user->getPhoneNumber() ?></td>
-                <td><?= $user->getCity() ?></td>
+            <tr ng-repeat="user in users">
+                <td>{{user.name}}</td>
+                <td>{{user.email}}</td>
+                <td>{{user.phone_number}}</td>
+                <td>{{user.city}}</td>
             </tr>
-            <?php endforeach ?>
         </tbody>
     </table>
     </div>
@@ -85,3 +83,7 @@
 
 </div>
 </div>
+
+<script type="text/javascript">
+    window.users = [<?php foreach ($users as $user) echo $user->toJSON().',' ?>];
+</script>
