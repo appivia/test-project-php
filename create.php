@@ -1,11 +1,11 @@
 <?php
 
-// check if do we have an AJAX request
-if(empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest') {
-	exit;
-}
-
 $app = require "./core/app.php";
+
+// check if do we have an AJAX request // BUGGY
+// if(empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest') {
+// 	exit;
+// }
 
 // Create new instance of user
 $user = new User($app->db);
