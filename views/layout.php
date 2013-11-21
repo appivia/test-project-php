@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html ng-app>
   <head>
     <meta charset="UTF-8">
 
@@ -15,6 +15,8 @@
     <script type="text/javascript" charset="utf-8" src="js/angular.min.js"></script>
     <script type="text/javascript" charset="utf-8" src="js/jquery.min.js"></script>
     <script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
+
+    <script type="text/javascript" charset="utf-8" src="js/users.js"></script>
   </head>
   <body>
   <div class="container">
