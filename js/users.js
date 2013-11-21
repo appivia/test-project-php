@@ -7,16 +7,18 @@ function UsersCtrl($scope, $http) {
 		name: "John",
 		email: "",
 		city: "",
-		phone: ""
+		phone_number: ""
 	};
 
 	$scope.user = angular.copy(master);
 
-	$scope.addUser = function () {
-		$scope.users.push($scope.user);
-
-		// console.log($scope.users);
-		$scope.user = angular.copy(master);
+	$scope.addUser = function (form) {
+		if (form.$valid) {
+			$http.post('/create.php', $scope.user).success(function () {
+				$scope.users.push($scope.user);
+				$scope.user = angular.copy(master);
+			});
+		}
 	};
 
 	$scope.phone = /^\+?[\d\(\)\-\ ]+$/;
