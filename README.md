@@ -4,7 +4,7 @@ Appivia.com
 ### Description
 This is a very simple one-page application consisting of just one table (representing users of some company),
 and a form for creating new rows. To make it a little more complicated, we have written a 'framework' you will have to use.
-Bellow is set of simple tasks to perform.
+Below is set of simple tasks to perform.
 
 ### Preparation steps
 1. Fork this repository
