@@ -5,6 +5,7 @@ function validate($newUser) {
         return array("result" => false, "reason" => "user name too short");
     }
     // additional validation belongs here
+    // includes validation for length of the fields, their presence, format...
     return array("result" => true);
 }
 
@@ -19,7 +20,8 @@ if ($validationResult["result"]) {
     $rawUser = array(
     	'name' => $newUser['name'],
     	'email' => $newUser['email'],
-    	'city' => $newUser['city']
+        'city' => $newUser['city'],
+        'phone_number' => $newUser['phone_number']
     );
     $user->insert($rawUser);
     echo json_encode(array("success" => "User added!", "user" => $rawUser));

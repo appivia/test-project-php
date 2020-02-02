@@ -49,3 +49,9 @@ INSERT INTO `users` (`id`, `name`, `email`, `city`, `created_at`) VALUES
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+-- Migration: add phone_number column
+-- In real-life projects it would sit in a different file
+-- And there would be both up and down migrations
+ALTER TABLE users
+ADD phone_number varchar(20);

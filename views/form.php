@@ -16,6 +16,10 @@
 		<div class="col-sm-3"><input name="city" input="text" id="city" class="form-control" required/></div>
 	</div>
     <div class="form-group">
+		<label class="control-label col-sm-5" for="phone_number">Phone Number:</label>
+		<div class="col-sm-3"><input name="phone_number" input="text" id="phone_number" class="form-control" /></div>
+	</div>
+    <div class="form-group">
 		<div class="col-sm-4 col-sm-offset-5">
 			<input type="submit" class="btn btn-default" value="Create new row" />
 		</div>
@@ -38,7 +42,9 @@
         }
         if (json.success) {
             alert(json.success)
-            users.push(json.user)
+            const jsonUser = json.user
+            const user = createUser(jsonUser.name, jsonUser.email, jsonUser.city, jsonUser.phone_number)
+            users.push(user)
             renderUserList(users)
             $("form")[0].reset()
         }

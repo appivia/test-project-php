@@ -5,7 +5,12 @@ users = [
   // or even better - to use a framework like React that would nicely handle this
 
   foreach($users as $user) {
-    $resolvedUser = array("name" => $user->getName(), "email" => $user->getEmail(), "city" => $user->getCity());
+    $resolvedUser = array(
+        "name" => $user->getName(),
+        "email" => $user->getEmail(),
+        "city" => $user->getCity(),
+        "phoneNumber" => $user->getPhoneNumber()
+    );
     echo json_encode($resolvedUser);
     echo ",";
   }
@@ -19,6 +24,7 @@ users = [
 			<th>Name</th>
 			<th>E-mail</th>
 			<th>City <input type="text" id="cityFilter" placeholder="Filter by city name"/></th>
+            <th>Phone Number</th>
 		</tr>
 	</thead>
 	<tbody id="tableList">
@@ -28,6 +34,7 @@ users = [
 			<td><?=$user->getName()?></td>
 			<td><?=$user->getEmail()?></td>
 			<td><?=$user->getCity()?></td>
+            <td><?=$user->getPhoneNumber()?></td>
 		</tr>
 		<?php } ?>
 	</tbody>

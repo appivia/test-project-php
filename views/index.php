@@ -2,14 +2,17 @@
 <script>
   let users = []; // used in the children templates
 
-  function createUser(name, email, city) {
-	  return {name, email, city}
+  function createUser(name, email, city, phoneNumber) {
+	  return {name, email, city, phoneNumber}
   }
+
+  // in the ideal world, this would only be in usersList.php
   function renderRow(user) {
       return `<tr>
         <td>${user.name}</td>
 		<td>${user.email}</td>
 		<td>${user.city}</td>
+		<td>${user.phoneNumber || ''}</td>
       </tr>`
   }
 
