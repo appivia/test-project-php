@@ -100,6 +100,11 @@ class BaseModel {
 
 		// this is useless, but since it's a demo project, I'm not rewriting it into prepared statements
 		// see https://security.stackexchange.com/questions/67504/is-addslashes-htmlentities-sufficiently-secure
+
+		// also, this causes a bug in the application. if the phone number starts
+		// with a zero, the zeros won't get saved. "005" is a numeric value!
+		// fixing this would involve explicitly clarifying the output type
+
 		if(!is_numeric($value))return "'".htmlentities(addslashes($value))."'";
 		return $value;
 	}
