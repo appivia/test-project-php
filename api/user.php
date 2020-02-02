@@ -16,7 +16,6 @@ if ($validationResult["result"]) {
 
     // Create new instance of user
     $user = new User($app->db);
-    // Insert it to database with POST data
     $rawUser = array(
     	'name' => $newUser['name'],
     	'email' => $newUser['email'],
