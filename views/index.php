@@ -1,25 +1,30 @@
 <h1 class="text-center">PHP Test Application</h1>
+<script>
+  let users = []; // used in the children templates
 
+  function createUser(name, email, city) {
+	  return {name, email, city}
+  }
+  function renderRow(user) {
+      return `<tr>
+        <td>${user.name}</td>
+		<td>${user.email}</td>
+		<td>${user.city}</td>
+      </tr>`
+  }
+
+  function renderUserList(usersToRender) {
+	$("#tableList").html(usersToRender.map(renderRow).join());
+  }
+
+</script>
 <div class="container-fluid">
 <?php
   include './views/form.php'
 ?>
-<table class="table table-striped">
-	<thead>
-		<tr>
-			<th>Name</th>
-			<th>E-mail</th>
-			<th>City</th>
-		</tr>
-	</thead>
-	<tbody>
-		<?php foreach($users as $user){?>
-		<tr>
-			<td><?=$user->getName()?></td>
-			<td><?=$user->getEmail()?></td>
-			<td><?=$user->getCity()?></td>
-		</tr>
-		<?php } ?>
-	</tbody>
-</table>
+
+<?php
+  include './views/usersList.php'
+?>
+
 </div>

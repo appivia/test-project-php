@@ -16,12 +16,13 @@ if ($validationResult["result"]) {
     // Create new instance of user
     $user = new User($app->db);
     // Insert it to database with POST data
-    $user->insert(array(
+    $rawUser = array(
     	'name' => $newUser['name'],
     	'email' => $newUser['email'],
     	'city' => $newUser['city']
-    ));
-    echo json_encode(array("success" => "User added!"));
+    );
+    $user->insert($rawUser);
+    echo json_encode(array("success" => "User added!", "user" => $rawUser));
 } else {
     echo json_encode(array("error" => $validationResult["reason"]));
 }

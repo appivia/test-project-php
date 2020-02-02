@@ -38,6 +38,9 @@
         }
         if (json.success) {
             alert(json.success)
+            users.push(json.user)
+            renderUserList(users)
+            $("form")[0].reset()
         }
     } catch(e) {
         console.log(e)
