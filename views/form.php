@@ -3,17 +3,17 @@
 <form class="form-horizontal" method="post" id="new-user-form">
 	<div class="form-group">
 		<label class="control-label col-sm-5" for="name">Name:</label>
-		<div class="col-sm-3"><input name="name" input="text" id="name" class="form-control"/></div>
+		<div class="col-sm-3"><input name="name" input="text" id="name" class="form-control" required/></div>
 	</div>
 
 	<div class="form-group">
 		<label class="control-label col-sm-5" for="email">E-mail:</label>
-		<div class="col-sm-3"><input name="email" type="email" input="text" id="email" class="form-control"/></div>
+		<div class="col-sm-3"><input name="email" type="email" input="text" id="email" class="form-control" required/></div>
 	</div>
 
 	<div class="form-group">
 		<label class="control-label col-sm-5" for="city">City:</label>
-		<div class="col-sm-3"><input name="city" input="text" id="city" class="form-control"/></div>
+		<div class="col-sm-3"><input name="city" input="text" id="city" class="form-control" required/></div>
 	</div>
     <div class="form-group">
 		<div class="col-sm-4 col-sm-offset-5">
