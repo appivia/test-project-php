@@ -24,12 +24,12 @@ services:
   application:
     build: .
     ports:
-      - "80:80"
+      - "3000:3000"
     environment:
       - DB_HOST=database
       - DB_USER=${MYSQL_USER}
       - DB_PASSWORD=${MYSQL_PASSWORD}
-      - DB_DATABASE=${MYSQL_DATABASE}
+      - DB_NAME=${MYSQL_DATABASE}
     volumes:
       - .:/src
     links:
