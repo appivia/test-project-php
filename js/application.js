@@ -1,18 +1,36 @@
+const submitForm = ($form) => {
+  const $buttons = $form.find('button');
+
+  $.ajax({
+    url: $form.attr('action'),
+    beforeSend: () => {
+      $buttons.prop('disabled', true);
+    },
+    complete: () => {
+      $buttons.prop('disabled', false);
+    },
+  });
+};
+
+const resetForm = ($form) => {
+};
+
+const renderErrorMessages = () => {
+};
+
+const renderSuccessMessage = () => {
+};
+
 const setupForms = () => {
-  $('form').each((_, form) => {
+  $('.js-ajax-form').each((_, form) => {
     const $form = $(form);
 
     $form.on('submit', (evt) => {
-      const isValid = evt.target.checkValidity();
-
       evt.preventDefault();
       evt.stopPropagation();
 
-      if ($form.hasClass('needs-validation')) {
-        $form.addClass('was-validated');
-      }
-
-      console.log('form is valid?', isValid)
+      $form.addClass('was-validated');
+      submitForm($form);
     });
   });
 };

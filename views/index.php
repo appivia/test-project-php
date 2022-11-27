@@ -23,7 +23,17 @@
 	</table>
 </div>
 
-<form method="post" action="create.php" class="needs-validation" novalidate>
+<hr />
+
+<form method="post" action="create.php" class="js-ajax-form needs-validation" novalidate>
+	<legend class="mb-0">
+		Create a new user
+	</legend>
+
+	<p class="small mb-4">
+		Create a new user by adding their information on the form below
+	</p>
+
 	<div class="row mb-3">
 		<label for="name" class="col-sm-2 col-form-label">Name:</label>
 		<div class="col-sm-10">
@@ -46,6 +56,6 @@
 	</div>
 
 	<button type="submit" class="btn btn-primary">
-        Create new row
-    </button>
+		Create new row
+	</button>
 </form>

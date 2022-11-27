@@ -60,5 +60,5 @@ try {
 
 	$app->renderJson($user);
 } catch (ValidationError $e) {
-	$app->renderJson($e, 422);
+	$app->renderJson($e, 400);
 }
