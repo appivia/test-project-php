@@ -21,11 +21,13 @@
 				<td><?=$user->getCity()?></td>
 				<td>
 					<a href="/edit.php?id=<?=$user->getId()?>" class="btn btn-secondary">
+						<span class="bi bi-pencil"></span>
 						Edit
 					</a>
 				</td>
 				<td>
 					<a href="/delete.php?id=<?=$user->getId()?>" class="js-delete-user btn btn-danger" data-id="<?=$user->getId()?>">
+					<span class="bi bi-x-circle"></span>
 						Delete
 					</a>
 				</td>
