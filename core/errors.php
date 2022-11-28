@@ -34,3 +34,6 @@ class ValidationError extends Exception implements JsonSerializable
 		];
 	}
 }
+
+class NotFounderror extends Exception {
+}

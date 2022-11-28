@@ -1,14 +1,14 @@
 <?php
-// The page was accessed directly, bail...
-if (
-	!isset($_SERVER['HTTP_X_REQUESTED_WITH'])
-	|| strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) !== 'xmlhttprequest'
-) {
+require_once './core/helpers.php';
+require_once './core/errors.php';
+
+// The page was accessed directly or via an invalid method, bail...
+if (!isAjaxRequest() || !isRequestMethod('post')) {
   header('Location: /index.php');
   die;
 }
 
-require_once './core/errors.php';
+$app = require "./core/app.php";
 
 /**
  * Returns the sanitized user data
@@ -48,8 +48,6 @@ function validateData($data) {
 
 	return $data;
 }
-
-$app = require "./core/app.php";
 
 $data = getSanitizedData();
 

@@ -6,8 +6,13 @@
  * @param {String} variant the bootstrap alert variant
  */
 const createAlert = ($placeholder, message, variant='success') => {
+  if (!$placeholder.length) {
+    return;
+  }
+
   const $alert = $(`<div class="alert alert-${variant}" role="alert" />`).text(message);
   $placeholder.prepend($alert);
+  $placeholder.each((_, ui) => ui.scrollIntoView());
 
   // Remove the alert after 3 seconds
   setTimeout(() => $alert.hide(() => { $alert.remove() }), 3000);

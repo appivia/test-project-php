@@ -27,6 +27,7 @@ class User extends BaseModel implements JsonSerializable
 	public function jsonSerialize()
 	{
 		return [
+			'id' => $this->getId(),
 			'name' => $this->getName(),
 			'email' => $this->getEmail(),
 			'city' => $this->getCity(),
