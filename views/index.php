@@ -3,7 +3,7 @@
 </header>
 
 <div class="table-responsive mb-4">
-	<table class="table table-striped">
+	<table class="table table-striped js-users-table">
 		<thead>
 			<tr>
 				<th>Name</th>
@@ -23,9 +23,9 @@
 	</table>
 </div>
 
-<hr />
+<hr>
 
-<form method="post" action="create.php" class="js-ajax-form needs-validation" novalidate>
+<form method="post" action="create.php" class="js-ajax-form js-add-user-form needs-validation" novalidate>
 	<legend class="mb-0">
 		Create a new user
 	</legend>
@@ -37,21 +37,21 @@
 	<div class="row mb-3">
 		<label for="name" class="col-sm-2 col-form-label">Name:</label>
 		<div class="col-sm-10">
-			<input name="name" input="text" id="name" class="form-control" required />
+			<input name="name" type="text" id="name" class="form-control" required>
 		</div>
 	</div>
 
 	<div class="row mb-3">
 		<label for="email" class="col-sm-2 col-form-label">E-mail:</label>
 		<div class="col-sm-10">
-			<input name="email" input="email" id="email" class="form-control" required />
+			<input name="email" type="email" id="email" class="form-control" required>
 		</div>
 	</div>
 
 	<div class="row mb-3">
 		<label for="city" class="col-sm-2 col-form-label">City:</label>
 		<div class="col-sm-10">
-			<input name="city" input="text" id="city" class="form-control" required />
+			<input name="city" type="text" id="city" class="form-control" required>
 		</div>
 	</div>
 
@@ -59,3 +59,21 @@
 		Create new row
 	</button>
 </form>
+
+<script>
+	$(function () {
+		$('.js-add-user-form').on('form:success', (event, data) => {
+			// Show the success message
+			createAlert($('.js-add-user-form'), 'User was successfully added', 'success');
+
+			// Add the user to the table
+			$('.js-users-table tbody').append(`
+				<tr>
+					<td>${data.name || ''}</td>
+					<td>${data.email || ''}</td>
+					<td>${data.city || ''}</td>
+				</tr>
+			`);
+		});
+	});
+</script>
