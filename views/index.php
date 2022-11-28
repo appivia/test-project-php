@@ -27,7 +27,7 @@
 				</td>
 				<td>
 					<a href="/delete.php?id=<?=$user->getId()?>" class="js-delete-user btn btn-danger" data-id="<?=$user->getId()?>">
-					<span class="bi bi-x-circle"></span>
+						<span class="bi bi-x-circle"></span>
 						Delete
 					</a>
 				</td>
@@ -91,11 +91,13 @@
 					<td>${data.city || ''}</td>
 					<td>
 						<a href="/edit.php?id=${data.id}" class="btn btn-secondary">
+							<span class="bi bi-pencil"></span>
 							Edit
 						</a>
 					</td>
 					<td>
 						<a href="/delete.php?id=${data.id}" class="js-delete-user btn btn-danger" data-id="${data.id}">
+							<span class="bi bi-x-circle"></span>
 							Delete
 						</a>
 					</td>

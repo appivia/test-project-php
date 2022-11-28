@@ -4,7 +4,10 @@
 	</legend>
 
 	<p>
-		<a href="/">Go back to all users</a>
+		<a href="/">
+			<span class="bi bi-arrow-left"></span>
+			Go back to all users
+		</a>
 	</p>
 
 	<div class="row mb-3">
