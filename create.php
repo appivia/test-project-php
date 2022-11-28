@@ -14,8 +14,15 @@ try {
 	$data = User::validateData($_POST);
 
 	$user = new User($app->db);
-	$user->insert($data);
 
+	// Check if the user already exists
+	$existing = User::findFirst($app->db, '*', ['email' => $data['email']]);
+
+	if ($existing) {
+		throw new ValidationError('User with email ' . $data['email'] . ' already exists');
+	}
+
+	$user->insert($data);
 	$app->renderJson($user);
 } catch (ValidationError $e) {
 	$app->renderJson($e, 400);

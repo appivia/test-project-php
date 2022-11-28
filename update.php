@@ -19,6 +19,17 @@ try {
 
 	$data = User::validateData($_POST);
 
+	$existing = array_filter(
+		User::find($app->db, '*', ['email' => $data['email']]),
+		function ($u) use ($id) {
+			return (int)$u->getId() !== (int)$id;
+		}
+	);
+
+	if (!empty($existing)) {
+		throw new ValidationError('User with email ' . $data['email'] . ' already exists');
+	}
+
 	$user = new User($app->db, $id);
 	$user->update($data);
 

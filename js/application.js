@@ -47,7 +47,7 @@ const clearFormErrors = ($form) => {
  */
 const renderErrorMessages = ($form, errorMessage, errors) => {
   if (errorMessage) {
-    createAlert($('.js-add-user-form'), errorMessage, 'danger');
+    createAlert($form, errorMessage, 'danger');
   }
 
   Object.entries(errors || {}).forEach(([name, msg]) => {
