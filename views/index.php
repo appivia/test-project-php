@@ -3,7 +3,7 @@
 </header>
 
 <div class="table-responsive mb-4 js-users-container">
-	<table class="table table-striped js-users-table">
+	<table class="table table-striped js-users-table users-table">
 		<thead>
 			<tr>
 				<th>#</th>
