@@ -81,7 +81,7 @@ const submitForm = ($form) => {
     },
     success: (data) => {
       clearFormErrors($form);
-      $form.trigger('form:success', [data]).trigger('reset');
+      $form.trigger('form:success', [data]);
     },
     error: (response) => {
       const { responseJSON: { message = '', errors = {} } = {} } = response;

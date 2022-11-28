@@ -2,10 +2,11 @@
 	<h1>PHP Test Application</h1>
 </header>
 
-<div class="table-responsive mb-4">
+<div class="table-responsive mb-4 js-users-container">
 	<table class="table table-striped js-users-table">
 		<thead>
 			<tr>
+				<th>#</th>
 				<th>Name</th>
 				<th>E-mail</th>
 				<th>City</th>
@@ -13,10 +14,21 @@
 		</thead>
 		<tbody class="table-group-divider">
 			<?foreach($users as $user){?>
-			<tr>
+			<tr data-id="<?=$user->getId()?>">
+				<td><?=$user->getId()?></td>
 				<td><?=$user->getName()?></td>
 				<td><?=$user->getEmail()?></td>
 				<td><?=$user->getCity()?></td>
+				<td>
+					<a href="/edit.php?id=<?=$user->getId()?>" class="btn btn-secondary">
+						Edit
+					</a>
+				</td>
+				<td>
+					<a href="/delete.php?id=<?=$user->getId()?>" class="js-delete-user btn btn-danger" data-id="<?=$user->getId()?>">
+						Delete
+					</a>
+				</td>
 			</tr>
 			<?}?>
 		</tbody>
@@ -56,7 +68,7 @@
 	</div>
 
 	<button type="submit" class="btn btn-primary">
-		Create new row
+		Create User
 	</button>
 </form>
 
@@ -64,16 +76,53 @@
 	$(function () {
 		$('.js-add-user-form').on('form:success', (event, data) => {
 			// Show the success message
-			createAlert($('.js-add-user-form'), 'User was successfully added', 'success');
+			$form = $('.js-add-user-form');
+			createAlert($form, 'User was successfully added', 'success');
+			$form.trigger('reset');
 
 			// Add the user to the table
 			$('.js-users-table tbody').append(`
-				<tr>
+				<tr data-id="${data.id}">
+					<td>${data.id}</td>
 					<td>${data.name || ''}</td>
 					<td>${data.email || ''}</td>
 					<td>${data.city || ''}</td>
+					<td>
+						<a href="/edit.php?id=${data.id}" class="btn btn-secondary">
+							Edit
+						</a>
+					</td>
+					<td>
+						<a href="/delete.php?id=${data.id}" class="js-delete-user btn btn-danger" data-id="${data.id}">
+							Delete
+						</a>
+					</td>
 				</tr>
 			`);
+		});
+
+		$(document).on('click', '.js-delete-user', (evt) => {
+			evt.preventDefault();
+			evt.stopPropagation();
+
+			if (!confirm('You are about to permanently delete this user, are you sure?')) {
+				return;
+			}
+
+			const $target = $(event.target);
+
+			$.ajax({
+				url: $target.attr('href'),
+				method: 'delete',
+				success: () => {
+					createAlert($('.js-users-container'), 'User was successfully deleted', 'success');
+					const $row = $(`tr[data-id="${$target.data('id')}"]`);
+					$row.hide(() => $row.remove());
+				},
+				error: () => {
+					createAlert($('.js-users-container'), 'User could not be deleted', 'danger');
+				},
+			});
 		});
 	});
 </script>

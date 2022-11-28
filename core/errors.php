@@ -35,5 +35,5 @@ class ValidationError extends Exception implements JsonSerializable
 	}
 }
 
-class NotFounderror extends Exception {
+class NotFoundError extends Exception {
 }
