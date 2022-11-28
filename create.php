@@ -1,15 +1,29 @@
 <?php
+require_once './core/helpers.php';
+require_once './core/errors.php';
+
+// The page was accessed directly or via an invalid method, bail...
+if (!isAjaxRequest() || !isRequestMethod('post')) {
+  header('Location: /index.php');
+  die;
+}
 
 $app = require "./core/app.php";
 
-// Create new instance of user
-$user = new User($app->db);
-// Insert it to database with POST data
-$user->insert(array(
-	'name' => $_POST['name'],
-	'email' => $_POST['email'],
-	'city' => $_POST['city']
-));
+try {
+	$data = User::validateData($_POST);
 
-// Redirect back to index
-header('Location: index.php');
+	$user = new User($app->db);
+
+	// Check if the user already exists
+	$existing = User::findFirst($app->db, '*', ['email' => $data['email']]);
+
+	if ($existing) {
+		throw new ValidationError('User with email ' . $data['email'] . ' already exists');
+	}
+
+	$user->insert($data);
+	$app->renderJson($user);
+} catch (ValidationError $e) {
+	$app->renderJson($e, 400);
+}

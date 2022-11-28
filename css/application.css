@@ -1,0 +1,22 @@
+main {
+  max-width: 80%;
+  margin: 5rem auto;
+}
+
+/*
+make the main columns expand to the full width of the table so that secondary actions are narrower
+*/
+.users-table {
+  white-space: nowrap;
+}
+
+.users-table thead th:nth-child(2),
+.users-table thead th:nth-child(3),
+.users-table thead th:nth-child(4) {
+  width: 33%;
+}
+
+/* allow more space to the icons */
+.bi {
+  margin-right: 1rem;
+}
